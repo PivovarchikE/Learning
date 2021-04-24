@@ -1,0 +1,97 @@
+# числовая угадайка
+from random import randint
+from math import log, ceil
+
+num_tries = 0
+num = 0
+border_right = 1
+flag = False
+flag_repeat = True
+choose_repeat = ''
+counter_games = 0
+counter = 0
+best_try = 0
+print('Добро пожаловать в числовую угадайку.', '\n', 'Приятной игры.', sep='')
+
+
+# проверка на корректность ввода числа / "защита от дурака"
+def is_valid(num_input_fc):
+    if num_input_fc.isnumeric():
+        if 1 <= int(num_input_fc) <= border_right:
+            return True
+    else:
+        return False
+
+
+# проверка на корректность ввода ответа в финале / "защита от дурака"
+def is_valid_choose(choose_repeat_fc):
+    if choose_repeat_fc.isalpha():
+        if choose_repeat_fc.lower() == 'д' or choose_repeat_fc.lower() == 'н':
+            return True
+    else:
+        return False
+
+
+while flag_repeat:
+    print('Игра проводится в диапазоне чисел от 1 до n включительно. Введи правую границу n:')
+    border_right = input()
+    border_right = int(border_right)
+    num = randint(1, border_right)
+
+    num_tries = ceil(log(border_right, 2))
+    print(f'Наименьшее количество вопросов, которых гарантированно хватит, чтобы угадать число: {num_tries}.', '\n'
+          'Покажи всё, на что ты способен (-на).', sep='')
+
+    print(f'Введи любое целое число от 1 до {border_right} включительно:')
+    num_input = input()
+
+    while not flag:
+        if not is_valid(num_input):
+            print(f'А может быть все-таки введем целое число от 1 до {border_right}?')
+            num_input = input()
+            continue
+        else:
+            num_input = int(num_input)
+
+            counter += 1
+
+            if num_input < num:
+                print('Твоё число меньше загаданного, попробуйте еще разок:')
+                num_input = input()
+            elif num_input > num:
+                print('Твоё число больше загаданного, попробуйте еще разок:')
+                num_input = input()
+
+            if num_input == num:
+                counter_games += 1
+
+                if best_try == 0 or counter < best_try:
+                    best_try = counter
+
+                print('Поздравляю, ты угадал (-а).')
+                print(' ------------------------', '\n', 'Статистика', '\n', f'Количество игр: {counter_games} |',
+                      f'Количество попыток в текущей игре: {counter} |', f'Лучшая попытка: {best_try}',
+                      '\n', '------------------------',
+                      end := '', sep := '')
+
+                if counter <= num_tries:
+                    print('Отличная попытка! Ты уложился (-ась) в минимальное количество вопросов')
+
+                if counter == 1:
+                    print(f'Снимаю шляпу, потомок Ванги! {counter} попытка (-ок) это круто.')
+                print('Сыграем ещё раз? д = да, н = нет')
+
+                while True:
+                    choose_repeat = input()
+                    if is_valid_choose(choose_repeat):
+                        break
+                    else:
+                        print('Был введён некорректный ответ. Введи "д" или "нет": д = да, н = нет:')
+                        continue
+                break
+    if choose_repeat == 'д':
+        counter = 0
+        continue
+    else:
+        print('Спасибо, что играл (-а) в числовую угадайку. Хорошо, что игра не пальцы ;) Еще увидимся...')
+        flag_repeat = False
