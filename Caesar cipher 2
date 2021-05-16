@@ -1,0 +1,48 @@
+# шифр Цезаря. Вариант 2. Символы не английского алфавита не шифруются.
+# Каждое слово строки шифруется с помощью циклического сдвига на длину этого слова.
+
+
+eng_lower_alphabet = 'abcdefghijklmnopqrstuvwxyz'
+eng_upper_alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+text = input()
+
+
+# создаём список длин всех слов
+shift_list = []
+per_len = 0
+for index, value in enumerate(text):
+    if value in eng_lower_alphabet or value in eng_upper_alphabet:
+        per_len += 1
+    else:
+        if per_len > 0:
+            shift_list += [per_len]
+            per_len = 0
+else:
+    if per_len > 0:
+        shift_list += [per_len]
+
+
+# шифровка текста
+def to_decrypt(text_input, list_step):
+    decrypt_return = ''
+    ind_step = 0
+    flag_not_char = True
+    for ind, val in enumerate(text_input):
+        if val.isupper():
+            flag_not_char = True
+            decrypt_return += \
+                eng_upper_alphabet[(eng_upper_alphabet.find(val) + list_step[ind_step]) % len(eng_upper_alphabet)]
+        elif val.islower():
+            flag_not_char = True
+            decrypt_return += \
+                eng_lower_alphabet[(eng_lower_alphabet.find(val) + list_step[ind_step]) % len(eng_lower_alphabet)]
+        else:
+            decrypt_return += val
+            if flag_not_char:
+                ind_step += 1
+            flag_not_char = False
+    return decrypt_return
+
+
+print(to_decrypt(text, shift_list))
