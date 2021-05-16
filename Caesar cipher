@@ -1,0 +1,155 @@
+# шифр Цезаря
+
+
+eng_lower_alphabet = 'abcdefghijklmnopqrstuvwxyz'
+eng_upper_alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+rus_lower_alphabet = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
+rus_upper_alphabet = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'
+
+
+# проверка на корректность ввода числа (выбор шифрование/дешифрование)
+def is_valid(num_input):
+    if num_input.isnumeric():
+        if int(num_input) == 2 or int(num_input) == 1:
+            return True
+    else:
+        return False
+
+
+# проверка на корректность ввода числа (шаг сдвига)
+def is_valid_step(num_input):
+    if num_input.isnumeric():
+        if int(num_input) >= 1:
+            return True
+    else:
+        return False
+
+
+# расшифровка текста
+def to_encrypt(text_input, lang, step):
+    encrypt_return = ''
+    if int(lang) == 1:
+        for ind, val in enumerate(text_input):
+            if val.isupper():
+                encrypt_return += \
+                    rus_upper_alphabet[(rus_upper_alphabet.find(val) + int(step)) % len(rus_upper_alphabet)]
+            elif val.islower():
+                encrypt_return += \
+                    rus_lower_alphabet[(rus_lower_alphabet.find(val) + int(step)) % len(rus_lower_alphabet)]
+            else:
+                encrypt_return += val
+    elif int(lang) == 2:
+        for ind, val in enumerate(text_input):
+            if val.isupper():
+                encrypt_return += \
+                    eng_upper_alphabet[(eng_upper_alphabet.find(val) + int(step)) % len(eng_upper_alphabet)]
+            elif val.islower():
+                encrypt_return += \
+                    eng_lower_alphabet[(eng_lower_alphabet.find(val) + int(step)) % len(eng_lower_alphabet)]
+            else:
+                encrypt_return += val
+    return encrypt_return
+
+
+# шифровка текста
+def to_decrypt(text_input, lang, step):
+    decrypt_return = ''
+    if int(lang) == 1:
+        for ind, val in enumerate(text_input):
+            if val.isupper():
+                decrypt_return += \
+                    rus_upper_alphabet[(rus_upper_alphabet.find(val) - int(step)) % len(rus_upper_alphabet)]
+            elif val.islower():
+                decrypt_return += \
+                    rus_lower_alphabet[(rus_lower_alphabet.find(val) - int(step)) % len(rus_lower_alphabet)]
+            else:
+                decrypt_return += val
+    elif int(lang) == 2:
+        for ind, val in enumerate(text_input):
+            if val.isupper():
+                decrypt_return += \
+                    eng_upper_alphabet[(eng_upper_alphabet.find(val) - int(step)) % len(eng_upper_alphabet)]
+            elif val.islower():
+                decrypt_return += \
+                    eng_lower_alphabet[(eng_lower_alphabet.find(val) - int(step)) % len(eng_lower_alphabet)]
+            else:
+                decrypt_return += val
+    return decrypt_return
+
+
+# проверка на символы другого языка
+def is_language_valid(text_input, lang):
+    flag_lang = True
+    if int(lang) == 1:
+        for ind, val in enumerate(text_input):
+            if val.islower():
+                if val not in rus_lower_alphabet:
+                    flag_lang = False
+                    break
+            elif val.isupper():
+                if val not in rus_upper_alphabet:
+                    flag_lang = False
+                    break
+    elif int(lang) == 2:
+        for ind, val in enumerate(text_input):
+            if val.islower():
+                if val not in eng_lower_alphabet:
+                    flag_lang = False
+                    break
+            elif val.isupper():
+                if val not in eng_upper_alphabet:
+                    flag_lang = False
+                    break
+    return flag_lang
+
+
+print('Привет. Что будем делать? Введи 1 - если шифруем, 2 - если дешифруем:')
+while True:
+    what_do_answer = input()
+    if not is_valid(what_do_answer):
+        print('Был введён некорректный ответ. Введи 1 - если шифруем, 2 - если дешифруем:')
+        continue
+    else:
+        break
+
+
+print('С каким языком будем работать? Введи 1 - если с русским, 2 - если с английским:')
+while True:
+    what_language = input()
+    if not is_valid(what_language):
+        print('Был введён некорректный ответ. Введи 1 - если будем работать с русским языком, 2 - если с английским:')
+        continue
+    else:
+        break
+
+print('Введи шаг сдвига шифрования вправо (целое число больше 0):')
+while True:
+    step_shift = input()
+    if not is_valid_step(step_shift):
+        print('Был введён некорректный ответ. Введи целое число больше 0:')
+        continue
+    else:
+        break
+
+
+if int(what_do_answer) == 1:
+    print('Введите текст для шифрования:')
+    while True:
+        text = input()
+        if not is_language_valid(text, what_language):
+            print('В тексте содержатся символы иного алфавита. Введи текст, состоящий из символов русского алфавита:')
+            continue
+        else:
+            break
+    print(to_encrypt(text, what_language, step_shift))
+elif int(what_do_answer) == 2:
+    print('Ввведите текст для дешифрования:')
+    while True:
+        text = input()
+        if not is_language_valid(text, what_language):
+            print('В тексте содержатся символы иного алфавита. '
+                  'Введи текст, состоящий из символов английского алфавита:')
+            continue
+        else:
+            break
+    print(to_decrypt(text, what_language, step_shift))
