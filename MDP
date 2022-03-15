@@ -1,0 +1,77 @@
+# Нахождение минимума функции: метод деления отрезка пополам (MDP). Построение графика функции
+
+
+from math import sin, log, e
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import ticker
+
+print('Программа для нахождения минимума функции: метод деления отрезка пополам (MDP). Построение графика функции')
+print('Введите значение a')
+a_input = float(input())
+print('Введите значение b')
+b_input = float(input())
+print('Введите значение погрешности')
+eps_input = float(input())
+x = np.arange(a_input, b_input, eps_input)
+
+# Подпрограмма (функция) для расчёта заданной функции
+
+
+def function_fx(x_input):
+    fx = sin(x_input) ** 4 - log(x_input, e)
+    return fx
+
+
+# Подпрограмма (функция) для расчёта минимума
+
+
+def mdp_min_calculate(a, b, eps):
+    count = 0
+    flag = True
+    while flag:
+        x1 = (a + b - eps) / 2
+        x2 = (a + b + eps) / 2
+
+        y1 = function_fx(x1)
+        y2 = function_fx(x2)
+
+        if y1 > y2:
+            a = x1
+            count += 1
+        else:
+            b = x2
+            count += 1
+
+        if (b - a) < 2 * eps:
+            flag = False
+
+    mdp = (a + b) / 2
+
+    return mdp, count
+
+
+mdp_output, count_output = mdp_min_calculate(a_input, b_input, eps_input)
+print('Количество итераций: ', count_output)
+print(mdp_output)
+
+
+# Построение графика
+
+
+fig, ax = plt.subplots()
+plt.plot((np.sin(x) ** 4 - np.log(x) / np.log(np.e)), label=r'$f(x)=\sin(x)^4-log_e(x)$')
+plt.title(r'Построение графика функции $f(x)=\sin(x)^4-log_e(x)$')
+plt.xlabel(r'$x$', fontsize=14)
+plt.ylabel(r'$f(x)$', fontsize=14)
+plt.grid(True)
+plt.legend(loc='best', fontsize=12)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(2))
+ax.xaxis.set_minor_locator(ticker.MultipleLocator(1))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
+ax.yaxis.set_minor_locator(ticker.MultipleLocator(1))
+ax.minorticks_on()
+ax.grid(which='minor',
+        color='gray',
+        linestyle=':')
+plt.show()
